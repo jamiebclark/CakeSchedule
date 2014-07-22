@@ -1,6 +1,6 @@
 <?php
-class Invoice extends CakeScheduleAppModel {
+class Invoice extends SchedulerAppModel {
 	public $name = 'Invoice';
-	public $belongsTo = ['CakeSchedule.User'];
-	public $hasMany = ['CakeSchedule.Time'];
+	public $belongsTo = ['Scheduler.ScheduleUser'];
+	public $hasMany = ['Scheduler.Time'];
 }

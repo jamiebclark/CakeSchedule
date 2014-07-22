@@ -1,5 +1,5 @@
 <?php
-class TasksController extends CakeScheduleAppController {
+class TasksController extends SchedulerAppController {
 	public $name = 'Tasks';
 
 	public function index($userId = null) {

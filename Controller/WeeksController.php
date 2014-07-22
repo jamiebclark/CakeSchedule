@@ -1,18 +1,18 @@
 <?php
-App::uses('ScheduleTime', 'CakeSchedule.Utility');
+App::uses('ScheduleTime', 'Scheduler.Utility');
 
-class WeeksController extends CakeScheduleAppController {
+class WeeksController extends SchedulerAppController {
 	public $name = 'Weeks';
 
 	public function index($weekStart = null) {
 		$weekStart = ScheduleTime::weekStart($weekStart);
-		$Team = ClassRegistry::init('CakeSchedule.Team');
+		$Team = ClassRegistry::init('Scheduler.Team');
 
 		$teams = $Team->find('all', [
 			'contain' => [
-				'User',
+				'ScheduleUser',
 				'TeamMember' => [
-					'User',
+					'ScheduleUser',
 					'Week' => ['conditions' => ['Week.week_start' => $weekStart]]
 				]
 			],
@@ -26,7 +26,7 @@ class WeeksController extends CakeScheduleAppController {
 			'default' => [
 				'Week' => [
 					'week_start' => ScheduleTime::weekStart($weekStart),
-					'user_id' => $this->Auth->user('id'),
+					'schedule_user_id' => $this->Auth->user('id'),
 				]
 			]
 		]);

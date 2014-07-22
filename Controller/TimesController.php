@@ -1,6 +1,6 @@
 <?php
 App::uses('CakeTime', 'Utility');
-class TimesController extends CakeScheduleAppController {
+class TimesController extends SchedulerAppController {
 	public $name = 'Times';
 
 	public function index($userId = null, $start = null, $stop = null) {
@@ -19,14 +19,14 @@ class TimesController extends CakeScheduleAppController {
 					CakeTime::daysAsSql($start, $stop, 'Time.started'),
 					CakeTime::daysAsSql($start, $stop, 'Time.stopped'),
 				],
-				'Time.user_id' => $userId,
+				'Time.schedule_user_id' => $userId,
 			]
 		]);
 		$this->set(compact('userId', 'start', 'stop', 'times'));
 	}
 
 	public function add () {
-		$started = date('Y-m-d ') . Configure::read('CakeSchedule.dayStartTime');
+		$started = date('Y-m-d ') . Configure::read('Scheduler.dayStartTime');
 		$userId = $this->Auth->user('id');
 
 		foreach (['started', 'stopped', 'userId'] as $pass) {
@@ -41,7 +41,7 @@ class TimesController extends CakeScheduleAppController {
 		}
 
 
-		$this->FormData->addData(['default' => ['Time' => compact('started', 'stopped') + ['user_id' => $userId]]]);
+		$this->FormData->addData(['default' => ['Time' => compact('started', 'stopped') + ['schedule_user_id' => $userId]]]);
 		$this->render('/Elements/times/form');
 	}
 
@@ -49,7 +49,7 @@ class TimesController extends CakeScheduleAppController {
 		$result = $this->FormData->findModel($id);
 		$this->redirect([
 			'action' => 'index',
-			$result['Time']['user_id'],
+			$result['Time']['schedule_user_id'],
 			$result['Time']['started']
 		]);
 	}

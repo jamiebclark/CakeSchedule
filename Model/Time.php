@@ -1,9 +1,9 @@
 <?php
-class Time extends CakeScheduleAppModel {
+class Time extends SchedulerAppModel {
 	public $name = 'Time';
 	public $belongsTo = [
-		'CakeSchedule.Task', 
-		'CakeSchedule.User'
+		'Scheduler.Task', 
+		'Scheduler.ScheduleUser'
 	];
 
 	public $order = ['Time.started' => 'ASC', 'Time.stopped' => 'ASC'];

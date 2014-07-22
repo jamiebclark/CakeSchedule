@@ -1,4 +1,4 @@
 <?php
-$config['CakeSchedule'] = [
+$config['Scheduler'] = [
 	'dayStartTime' => '09:00:00',
 ];

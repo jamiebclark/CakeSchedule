@@ -1,6 +1,6 @@
 <?php
-class TeamMember extends CakeScheduleAppModel {
+class TeamMember extends SchedulerAppModel {
 	public $name = 'TeamMember';
-	public $hasMany = ['Week' => ['className' => 'CakeSchedule.Week', 'dependent' => true]];
-	public $belongsTo = ['CakeSchedule.Team', 'CakeSchedule.User'];
+	public $hasMany = ['Week' => ['className' => 'Scheduler.Week', 'dependent' => true]];
+	public $belongsTo = ['Scheduler.Team', 'Scheduler.ScheduleUser'];
 }

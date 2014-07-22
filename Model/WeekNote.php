@@ -1,8 +1,8 @@
 <?php
-class WeekNote extends CakeScheduleAppModel {
+class WeekNote extends SchedulerAppModel {
 	public $name = 'WeekNote';
 	public $belongsTo = [
-		'CakeSchedule.Week', 
-		'CakeSchedule.Task'
+		'Scheduler.Week', 
+		'Scheduler.Task'
 	];
 }

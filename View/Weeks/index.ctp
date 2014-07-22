@@ -4,7 +4,7 @@
 	<ul>
 	<?php foreach ($team['TeamMember'] as $teamMember): ?>
 		<li><?php echo $this->Html->link(
-			$teamMember['User']['full_name'],
+			$teamMember['ScheduleUser']['full_name'],
 			['controller' => 'weeks', 'action' => 'view', 'teamMemberId' => $teamMember['id'], 'weekStart' => $weekStart]
 		); ?></li>
 	<?php endforeach; ?>

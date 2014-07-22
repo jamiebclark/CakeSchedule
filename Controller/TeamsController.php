@@ -1,5 +1,5 @@
 <?php
-class TeamsController extends CakeScheduleAppController {
+class TeamsController extends SchedulerAppController {
 	public $name = 'Teams';
 
 	public function admin_index() {

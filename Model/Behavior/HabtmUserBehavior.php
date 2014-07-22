@@ -4,11 +4,11 @@ class HabtmUserBehavior extends ModelBehavior {
 
 	public function beforeFind(Model $Model, $query = []) {
 		if (!empty($query['userId'])) {
-			if (empty($Model->hasAndBelongsToMany['User'])) {
-				throw new Exception('Cannot use HabtmUserBehavior without first linking Model to User');
+			if (empty($Model->hasAndBelongsToMany['ScheduleUser'])) {
+				throw new Exception('Cannot use HabtmUserBehavior without first linking Model to ScheduleUser');
 			}
 
-			$habtm = $Model->hasAndBelongsToMany['User'];
+			$habtm = $Model->hasAndBelongsToMany['ScheduleUser'];
 			if (!empty($habtm['joinTable'])) {
 				$table = $habtm['joinTable'];
 			} else if (!empty($habtm['with'])) {
@@ -29,7 +29,7 @@ class HabtmUserBehavior extends ModelBehavior {
 				'alias' => 'HabtmUserFilter',
 				'conditions' => 'HabtmUserFilter.' . $foreignKey . ' = ' . $Model->escapeField()
 			];
-			$query['conditions']['HabtmUserFilter.user_id'] = $query['userId'];
+			$query['conditions']['HabtmUserFilter.schedule_user_id'] = $query['userId'];
 			unset($query['userId']);
 			return $query;
 		}

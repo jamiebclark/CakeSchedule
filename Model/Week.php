@@ -1,11 +1,11 @@
 <?php
-class Week extends CakeScheduleAppModel {
+class Week extends SchedulerAppModel {
 	public $name = 'Week';
-	public $hasMany = ['CakeSchedule.WeekNote'];
-	public $belongsTo = ['CakeSchedule.TeamMember'];
+	public $hasMany = ['Scheduler.WeekNote'];
+	public $belongsTo = ['Scheduler.TeamMember'];
 	public $hasAndBelongsToMany = [
 		'Task' => [
-			'className' => 'CakeSchedule.Task',
+			'className' => 'Scheduler.Task',
 			'foreignKey' => 'week_id',
 			'associationForeignKey' => 'task_id',
 			'joinTable' => 'sched_tasks_weeks',

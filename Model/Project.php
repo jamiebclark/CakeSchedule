@@ -1,20 +1,20 @@
 <?php
-class Project extends CakeScheduleAppModel {
+class Project extends SchedulerAppModel {
 	public $name = 'Project';
 
-	public $hasMany = ['CakeSchedule.Task'];
+	public $hasMany = ['Scheduler.Task'];
 	public $belongsTo = [
 		'Creator' => [
-			'className' => 'CakeSchedule.User',
+			'className' => 'Scheduler.ScheduleUser',
 			'foreignKey' => 'creator_id',
 		]
 	];
 
 	public $hasAndBelongsToMany = [
-		'User' => [
-			'className' => 'CakeSchedule.User',
+		'ScheduleUser' => [
+			'className' => 'Scheduler.ScheduleUser',
 			'foreignKey' => 'project_id',
-			'assocationForeignKey' => 'user_id',
+			'assocationForeignKey' => 'schedule_user_id',
 		]
 	];
 }

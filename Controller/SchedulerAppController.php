@@ -1,5 +1,5 @@
 <?php
-class CakeScheduleAppController extends AppController {
+class SchedulerAppController extends AppController {
 	public $helpers = [
 		//'Html', 
 		//'Form', 
