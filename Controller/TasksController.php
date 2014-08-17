@@ -39,4 +39,20 @@ class TasksController extends SchedulerAppController {
 	public function delete($id = null) {
 		$this->FormData->deleteData($id);
 	}
+
+	public function save() {
+		if (!empty($this->request->data['Task'])) {
+			foreach ($this->request->data['Task'] as $k => $task) {
+				if (empty($task['title']) && empty($task['id'])) {
+					unset($this->request->data['Task'][$k]);
+				}
+			}
+			$this->request->data['Task'] = array_values($this->request->data['Task']);
+		}
+		$this->FormData->setSuccessRedirect(['action' => 'index']);
+		$this->FormData->saveData();
+
+		$this->redirect(['action' => 'index']);
+	}
+
 }

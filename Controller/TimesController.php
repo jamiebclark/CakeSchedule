@@ -1,5 +1,7 @@
 <?php
 App::uses('CakeTime', 'Utility');
+App::uses('ScheduleTime', 'Scheduler.Utility');
+
 class TimesController extends SchedulerAppController {
 	public $name = 'Times';
 
@@ -7,13 +9,35 @@ class TimesController extends SchedulerAppController {
 		if (empty($userId)) {
 			$userId = $this->Auth->user('id');
 		}
+
+		// Finds a highlighted time
+		if (!empty($this->request->named['id'])) {
+			$activeTime = $this->FormData->findModel($this->request->named['id']);
+			$start = ScheduleTime::weekStart($activeTime['Time']['started']);
+		}
+
 		if (empty($start)) {
 			$start = (date('l') == 'Sunday') ? 'today' : 'last Sunday';
 		}
 		if (empty($stop)) {
-			$stop = 'next Sunday';
+			$stop = ScheduleTime::date($start, '+1 week');
 		}
-		$times = $this->Time->findDays([
+
+		$startStamp = ScheduleTime::toTime($start);
+		$stopStamp = ScheduleTIme::toTime($stop);
+
+		if ($stopStamp < $startStamp) {
+			$this->redirect($userId, $stop, $start);
+		}
+
+		$start 	= ScheduleTime::dateStart($start);
+		$stop 	= ScheduleTime::dateEnd($stop);
+		list($startStamp, $stopStamp) = ScheduleTime::toTime([$start, $stop]);
+
+		// Difference between start and stop
+		$offset = $stopStamp - $startStamp;
+
+		$times = $this->FormData->findAll([
 			'conditions' => [
 				'OR' => [
 					CakeTime::daysAsSql($start, $stop, 'Time.started'),
@@ -21,14 +45,40 @@ class TimesController extends SchedulerAppController {
 				],
 				'Time.schedule_user_id' => $userId,
 			]
+		], ['method' => 'findDays']);
+
+
+		$nextStart 	= ScheduleTime::date($stop);
+		$nextStop 	= ScheduleTime::date($stop, $offset);
+		$prevStop 	= ScheduleTime::date($start, '-1 day');
+		$prevStart 	= ScheduleTime::date($prevStop, -1 * $offset);
+
+		$this->_setFormElements();
+		$tasks = $this->Time->Task->findUserTasks($userId);
+		$this->request->data = $this->FormData->resultsToData($tasks, [
+			'model' => 'Task'
 		]);
-		$this->set(compact('userId', 'start', 'stop', 'times'));
+		$teamProjects = $this->Time->Task->TeamProject->find('slash', ['userId' => $userId]);
+		$this->set(compact('teamProjects'));
+		
+		
+		$nextOpenTime = $this->Time->findNextOpenTime($userId, $start, $stop);
+		$this->set(compact('userId', 
+			'start', 'stop', 
+			'activeTime',
+			'startStamp', 'stopStamp',
+			'nextStart', 'nextStop',
+			'prevStart', 'prevStop',
+			'times', 'nextOpenTime'
+			//'tasks'
+		));
 	}
 
 	public function add () {
-		$started = date('Y-m-d ') . Configure::read('Scheduler.dayStartTime');
+		$started = ScheduleTime::startOfWorkDay();
 		$userId = $this->Auth->user('id');
 
+		// Checks for passed information
 		foreach (['started', 'stopped', 'userId'] as $pass) {
 			if (isset($this->request->params['named'][$pass])) {
 				$varName = Inflector::underscore($pass);
@@ -36,8 +86,15 @@ class TimesController extends SchedulerAppController {
 			}
 		}
 
+		$startedStamp = ScheduleTime::toTime($started);
+		$started = ScheduleTime::dateTime($startedStamp);
+		
+		if (ScheduleTime::isMidnight($started)) {
+			$startedStamp = $this->Time->findNextOpenTime($userId, ScheduleTime::dateStart($started), ScheduleTime::dateEnd($started));
+			$started = ScheduleTime::dateTime($startedStamp);
+		}
 		if (empty($this->request->params['named']['stopped'])) {
-			$stopped = date('Y-m-d H:i:s', strtotime("$started +1 hour"));
+			$stopped = ScheduleTime::dateTime($startedStamp + 3600);
 		}
 
 
@@ -50,7 +107,9 @@ class TimesController extends SchedulerAppController {
 		$this->redirect([
 			'action' => 'index',
 			$result['Time']['schedule_user_id'],
-			$result['Time']['started']
+			'id' => $result['Time']['id'],
+			//ScheduleTime::date($result['Time']['started'])
+
 		]);
 	}
 
@@ -60,11 +119,15 @@ class TimesController extends SchedulerAppController {
 	}
 
 	public function _setFormElements() {
+		$userId = $this->Auth->user('id');
 		$tasks = $this->Time->Task->find('list', [
 			'conditions' => [
-				'Task.completed' => null
+				'Task.completed' => null,
+				'Task.schedule_user_id' => $userId,
 			]
 		]);
-		$this->set(compact('tasks'));
+
+		$scheduleUsers = ['' => 'Anyone', $userId => 'You'] + $this->Time->ScheduleUser->findTeammates($userId, null, 'list');
+		$this->set(compact('tasks', 'scheduleUsers'));
 	}
 }

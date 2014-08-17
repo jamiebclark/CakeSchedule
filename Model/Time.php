@@ -1,4 +1,7 @@
 <?php
+App::uses('ScheduleTime', 'Scheduler.Utility');
+App::uses('SchedulerAppModel', 'Scheduler.Model');
+
 class Time extends SchedulerAppModel {
 	public $name = 'Time';
 	public $belongsTo = [
@@ -30,6 +33,30 @@ class Time extends SchedulerAppModel {
 	}
 	*/
 
+	public function findNextOpenTime($userId, $start = null, $stop = null) {
+		if (empty($start)) {
+			$start = ScheduleTime::dateStart();
+		}
+		$query = [
+			'conditions' => [
+				$this->escapeField('schedule_user_id') => $userId,
+				$this->escapeField('started') . ' >=' => $start,
+			],
+			'order' => ['Time.stopped' => 'DESC']
+		];
+		if (!empty($stop)) {
+			$query['conditions'][$this->escapeField('stopped') . ' <='] = ScheduleTime::dateEnd($stop);
+		}
+		$result = $this->find('first', $query);
+		if (empty($result)) {
+			$dayTime = ScheduleTime::startOfWorkDay($start);
+		} else {
+			$dayTime = $result[$this->alias]['stopped'];
+		}
+		return strtotime($dayTime);
+	}
+
+
 	public function findDays($query = []) {
 		$result = $this->find('all', $query);
 		$return = [];
@@ -37,8 +64,8 @@ class Time extends SchedulerAppModel {
 			$dayStart = date('Y-m-d', strtotime($row[$this->alias]['started']));
 			$dayStop  = date('Y-m-d', strtotime($row[$this->alias]['stopped']));
 			if ($dayStart != $dayStop) {
-				$return[$dayStart][] = [$this->alias => ['stopped' => $dayStart . ' 23:59:59'] + $row[$this->alias]];
-				$return[$dayStop][]  = [$this->alias => ['started' => $dayStop  . ' 00:00:00'] + $row[$this->alias]];
+				$return[$dayStart][] = [$this->alias => ['stopped' => ScheduleTime::dateEnd($dayStart)] + $row[$this->alias]];
+				$return[$dayStop][]  = [$this->alias => ['started' => ScheduleTime::dateStart($dayStop)] + $row[$this->alias]];
 			} else {
 				$return[$dayStart][] = $row;
 			}

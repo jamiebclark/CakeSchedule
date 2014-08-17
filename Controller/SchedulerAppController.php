@@ -7,4 +7,9 @@ class SchedulerAppController extends AppController {
 	];
 
 	public $layout = 'cake_schedule_default';
+
+	public function beforeRender() {
+		$this->set('scheduleUserId', $this->Auth->user('id'));
+		return parent::beforeRender();
+	}
 }

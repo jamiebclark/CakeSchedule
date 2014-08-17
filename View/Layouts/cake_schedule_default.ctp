@@ -2,7 +2,7 @@
 $this->extend('default');
 
 echo $this->Layout->menu([
-	['Projects', ['controller' => 'projects', 'action' => 'index']],
+	['Projects', ['controller' => 'team_projects', 'action' => 'index']],
 	['Tasks', ['controller' => 'tasks', 'action' => 'index']],
 	['Time', ['controller' => 'times', 'action' => 'index']],
 	['Week', ['controller' => 'weeks', 'action' => 'index']]

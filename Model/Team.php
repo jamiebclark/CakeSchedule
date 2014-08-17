@@ -3,7 +3,10 @@ class Team extends SchedulerAppModel {
 	public $name = 'Team';
 	public $actsAs = ['Scheduler.HabtmUser'];
 
-	public $hasMany = ['TeamMember' => ['className' => 'Scheduler.TeamMember', 'dependent' => true]];
+	public $hasMany = [
+		'TeamMember' => ['className' => 'Scheduler.TeamMember', 'dependent' => true],
+		'TeamProject' => ['className' => 'Scheduler.TeamProject', 'dependent' => true]
+	];
 	public $hasAndBelongsToMany = [
 		'ScheduleUser' => [
 			'className' => 'Scheduler.ScheduleUser',
