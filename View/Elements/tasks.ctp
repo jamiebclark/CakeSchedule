@@ -104,7 +104,7 @@ $taskCount = count($tasks) + 1;
 							<?php echo $this->Form->input("Task.$i.schedule_user_id", [
 								'default' => $scheduleUserId,
 								'label' => false,
-								'helpBlock' => 'Assign this task to another team member'
+								'after' => '<span class="help-block">Assign this task to another team member</span>'
 							]); ?>
 						</li>
 					</ul>

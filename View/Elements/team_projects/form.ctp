@@ -9,7 +9,7 @@ echo $this->Form->inputs([
 	'description',
 	'completed' => [
 		'label' => 'Completed',
-		'helpBlock' => 'Is the Project done?',
+		'after' => '<span class="help-block">Is the Project done?</span>',
 	],
 	'fieldset' => false,
 ]);
