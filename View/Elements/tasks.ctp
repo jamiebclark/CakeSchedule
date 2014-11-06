@@ -60,57 +60,59 @@ $taskCount = count($tasks) + 1;
 </style>
 
 <?php echo $this->Form->create('Task', ['action' => 'add', 'class' => 'scheduler-tasks']); ?>
-<div class="box">
-	<h4 class="box-header">Tasks</h4>
-	<div class="scheduler-tasks-list">
-		<?php for ($i = 0; $i < $taskCount; $i++): ?>
-			<div class="scheduler-tasks-list-item">
-				<?php echo $this->Form->hidden("Task.$i.id"); ?>
-				<?php echo $this->Form->hidden("Task.$i.creator_id", ['default' => $scheduleUserId]); ?>
-				<div class="scheduler-tasks-list-item-primary">
-					<div class="input-group">
-						<div class="input-group-btn"><?php 
-							echo $this->Form->input("Task.$i.completed", [
-								'value' => ScheduleTime::dateTime(),
-								'div' => false,
-								'label' => false,
-								'type' => 'checkbox',
-								'tabindex' => -1,
-							]); 
+<div class="panel panel-default">
+	<div class="panel-heading">Tasks</div>
+	<div class="panel-body">
+		<div class="scheduler-tasks-list">
+			<?php for ($i = 0; $i < $taskCount; $i++): ?>
+				<div class="scheduler-tasks-list-item">
+					<?php echo $this->Form->hidden("Task.$i.id"); ?>
+					<?php echo $this->Form->hidden("Task.$i.creator_id", ['default' => $scheduleUserId]); ?>
+					<div class="scheduler-tasks-list-item-primary">
+						<div class="input-group">
+							<div class="input-group-btn"><?php 
+								echo $this->Form->input("Task.$i.completed", [
+									'value' => ScheduleTime::dateTime(),
+									'div' => false,
+									'label' => false,
+									'type' => 'checkbox',
+									'tabindex' => -1,
+								]); 
+							?></div>
+							<?php
+								echo $this->Form->input("Task.$i.title", [
+									'type' => 'textarea',
+									'rows' => 1,
+									'label' => false,
+									'div' => false,
+									'class' => 'form-control scheduler-tasks-list-item-input'
+								]);
 						?></div>
-						<?php
-							echo $this->Form->input("Task.$i.title", [
-								'type' => 'textarea',
-								'rows' => 1,
-								'label' => false,
-								'div' => false,
-								'class' => 'form-control scheduler-tasks-list-item-input'
-							]);
-					?></div>
+					</div>
+					<div class="scheduler-tasks-list-item-secondary">
+						<ul class="scheduler-tasks-list-item-options">
+							<li>
+								<h5><i class="fa fa-clock-o"></i> Deadline</h5>
+								<?php echo $this->FormLayout->input("Task.$i.deadline", ['type' => 'date', 'label' => false]); ?>
+							</li>
+							<li>
+								<h5><i class="fa fa-clipboard"></i> Project</h5>
+								<?php echo $this->Form->input("Task.$i.team_project_id"); ?>
+								<?php echo $this->Form->input("Task.$i.team_project_new"); ?>
+							</li>
+							<li>
+								<h5><i class="fa fa-user"></i> User</h5>
+								<?php echo $this->Form->input("Task.$i.schedule_user_id", [
+									'default' => $scheduleUserId,
+									'label' => false,
+									'after' => '<span class="help-block">Assign this task to another team member</span>'
+								]); ?>
+							</li>
+						</ul>
+					</div>
 				</div>
-				<div class="scheduler-tasks-list-item-secondary">
-					<ul class="scheduler-tasks-list-item-options">
-						<li>
-							<h5><i class="fa fa-clock-o"></i> Deadline</h5>
-							<?php echo $this->FormLayout->input("Task.$i.deadline", ['type' => 'date', 'label' => false]); ?>
-						</li>
-						<li>
-							<h5><i class="fa fa-clipboard"></i> Project</h5>
-							<?php echo $this->Form->input("Task.$i.team_project_id"); ?>
-							<?php echo $this->Form->input("Task.$i.team_project_new"); ?>
-						</li>
-						<li>
-							<h5><i class="fa fa-user"></i> User</h5>
-							<?php echo $this->Form->input("Task.$i.schedule_user_id", [
-								'default' => $scheduleUserId,
-								'label' => false,
-								'after' => '<span class="help-block">Assign this task to another team member</span>'
-							]); ?>
-						</li>
-					</ul>
-				</div>
-			</div>
-		<?php endfor; ?>
+			<?php endfor; ?>
+		</div>
 	</div>
 </div>
 <?php echo $this->Form->end('Save'); ?>
