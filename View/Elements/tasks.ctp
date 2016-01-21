@@ -61,7 +61,7 @@ $taskCount = count($tasks) + 1;
 
 <?php echo $this->Form->create('Task', ['action' => 'add', 'class' => 'scheduler-tasks']); ?>
 <div class="panel panel-default">
-	<div class="panel-heading">Tasks</div>
+	<div class="panel-heading"><span class="panel-title">Tasks</span></div>
 	<div class="panel-body">
 		<div class="scheduler-tasks-list">
 			<?php for ($i = 0; $i < $taskCount; $i++): ?>
